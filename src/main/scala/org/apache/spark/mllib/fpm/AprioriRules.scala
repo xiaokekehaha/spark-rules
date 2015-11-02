@@ -25,7 +25,7 @@ import org.apache.spark.rdd.{EmptyRDD, RDD}
  */
 @Since("1.5.0")
 @Experimental
-class AprioriRule private[fpm](private var minConfidence: Double)
+class AprioriRules private[fpm](private var minConfidence: Double)
   extends AssociationRules {
 
   /**
