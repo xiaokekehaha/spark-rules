@@ -51,7 +51,7 @@ class AprioriRules private[fpm](
   }
 
   /**
-   * Sets the number of partitions used by AprioriRules (default: same as input data).
+   * Sets the maximum size of consequents used by AprioriRules (default: Int.MaxValue).
    *
    */
   @Since("1.5.0")
@@ -198,6 +198,14 @@ class AprioriRules private[fpm](
 
 object AprioriRules {
 
+  /**
+   * Computes the union seq.
+   * @param s1 ordered Seq1
+   * @param s2 ordered Seq2
+   * @return a ordered union Seq of s1 and s2.
+   *
+   */
+  @Since("1.5.0")
   def seqAdd(s1: Seq[Int], s2: Seq[Int]): Seq[Int] = {
     var i1 = 0
     var i2 = 0
@@ -232,7 +240,14 @@ object AprioriRules {
     buffer
   }
 
-
+  /**
+   * Computes the complement seq.
+   * @param s1 ordered Seq1
+   * @param s2 ordered Seq2, must be a sub-sequence of s1
+   * @return an ordered complement Seq, which equals to s1 -- s2.
+   *
+   */
+  @Since("1.5.0")
   def seqMinus(s1: Seq[Int], s2: Seq[Int]): Seq[Int] = {
     var i1 = 0
     var i2 = 0
@@ -263,6 +278,7 @@ object AprioriRules {
 
     buffer
   }
-
-
 }
+
+
+
