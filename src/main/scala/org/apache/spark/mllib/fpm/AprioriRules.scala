@@ -202,7 +202,7 @@ object AprioriRules {
    * Computes the union seq.
    * @param s1 ordered Seq1
    * @param s2 ordered Seq2
-   * @return a ordered union Seq of s1 and s2.
+   * @return an ordered union Seq of s1 and s2.
    *
    */
   @Since("1.5.0")
@@ -241,10 +241,10 @@ object AprioriRules {
   }
 
   /**
-   * Computes the complement seq.
+   * Computes the complementary seq.
    * @param s1 ordered Seq1
    * @param s2 ordered Seq2, must be a sub-sequence of s1
-   * @return an ordered complement Seq, which equals to s1 -- s2.
+   * @return an ordered Seq, which equals to s1 -- s2.
    *
    */
   @Since("1.5.0")
