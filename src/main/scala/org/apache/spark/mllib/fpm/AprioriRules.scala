@@ -32,7 +32,7 @@ class AprioriRules private[fpm](
                                  private var minConfidence: Double,
                                  private var maxConsequent: Int,
                                  private var numPartitions: Int)
-  extends Logging with Serializable {
+  extends Serializable {
 
 
   /**
@@ -96,7 +96,7 @@ class AprioriRules private[fpm](
         }
     }.persist()
 
-    val rules = AprioriRules.genRules(freqItemIndices, minConfidence, maxConsequent, numPartitions, log)
+    val rules = AprioriRules.genRules(freqItemIndices, minConfidence, maxConsequent, numPartitions)
 
     freqItemIndices.unpersist()
 
@@ -121,7 +121,7 @@ class AprioriRules private[fpm](
 }
 
 
-object AprioriRules {
+object AprioriRules extends Logging {
 
   /**
     * Computes the union seq.
@@ -129,7 +129,6 @@ object AprioriRules {
     * @param minConfidence minConfidence.
     * @param maxConsequent maxConsequent.
     * @param numPartitions numPartitions.
-    * @param log logger to output rule-generation information.
     * @return an ordered union Seq of s1 and s2.
     *
     */
@@ -137,8 +136,7 @@ object AprioriRules {
   def genRules(freqItemIndices: RDD[(Seq[Int], Long)],
                minConfidence: Double,
                maxConsequent: Int,
-               numPartitions: Int,
-               log: Logger
+               numPartitions: Int
               ): RDD[(Seq[Int], Seq[Int], Long, Long)] = {
 
     val sc = freqItemIndices.sparkContext
