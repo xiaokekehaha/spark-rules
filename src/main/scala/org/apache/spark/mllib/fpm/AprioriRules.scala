@@ -30,8 +30,7 @@ import org.apache.spark.rdd.{EmptyRDD, RDD}
 @Experimental
 class AprioriRules private[fpm](
                                  private var minConfidence: Double,
-                                 private var maxConsequent: Int,
-                                 private var numPartitions: Int)
+                                 private var maxConsequent: Int)
   extends Serializable {
 
 
@@ -39,7 +38,7 @@ class AprioriRules private[fpm](
     * Constructs a default instance with default parameters {minConfidence = 0.8}.
     */
   @Since("1.5.0")
-  def this() = this(0.8, Int.MaxValue, -1)
+  def this() = this(0.8, 1)
 
   /**
     * Sets the minimal confidence (default: `0.8`).
@@ -52,22 +51,11 @@ class AprioriRules private[fpm](
   }
 
   /**
-    * Sets the maximum size of consequents used by AprioriRules (default: Int.MaxValue).
-    *
+    * Sets the maximum size of consequents used by AprioriRules (default: 1).
     */
   @Since("1.5.0")
   def setMaxConsequent(maxConsequent: Int): this.type = {
     this.maxConsequent = maxConsequent
-    this
-  }
-
-  /**
-    * Sets the number of partitions used by AprioriRules (default: same as input data).
-    *
-    */
-  @Since("1.5.0")
-  def setNumPartitions(numPartitions: Int): this.type = {
-    this.numPartitions = numPartitions
     this
   }
 
@@ -96,7 +84,7 @@ class AprioriRules private[fpm](
         }
     }.persist()
 
-    val rules = AprioriRules.genRules(freqItemIndices, minConfidence, maxConsequent, numPartitions)
+    val rules = AprioriRules.genRules(freqItemIndices, minConfidence, maxConsequent)
 
     freqItemIndices.unpersist()
 
@@ -128,15 +116,13 @@ object AprioriRules extends Logging {
     * @param freqItemIndices Frequent Items with Integer Indices.
     * @param minConfidence minConfidence.
     * @param maxConsequent maxConsequent.
-    * @param numPartitions numPartitions.
     * @return an ordered union Seq of s1 and s2.
     *
     */
   @Since("1.5.0")
   def genRules(freqItemIndices: RDD[(Seq[Int], Long)],
                minConfidence: Double,
-               maxConsequent: Int,
-               numPartitions: Int
+               maxConsequent: Int
               ): RDD[(Seq[Int], Seq[Int], Long, Long)] = {
 
     val sc = freqItemIndices.sparkContext
@@ -188,7 +174,7 @@ object AprioriRules extends Logging {
 
             case _ => None
 
-          }.groupByKey(numPartitions).flatMap {
+          }.groupByKey().flatMap {
 
             case ((union, freqUnion), consequents) if consequents.size > 1 =>
               val array = consequents.toArray
